@@ -1,6 +1,7 @@
 package controllers
 
 import models.Company
+import utils.Utilities.isValidListIndex
 
 class CompanyAPI {
     private var companies =ArrayList<Company>()

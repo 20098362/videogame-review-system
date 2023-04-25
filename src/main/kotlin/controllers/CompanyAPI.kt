@@ -1,9 +1,13 @@
 package controllers
 
 import models.Company
+import persistence.Serializer
 import utils.Utilities.isValidListIndex
 
-class CompanyAPI {
+class CompanyAPI (serializerType: Serializer){
+
+    private var serializer: Serializer = serializerType
+
     private var companies =ArrayList<Company>()
 
     fun addCompany(company: Company): Boolean = companies.add(company)
@@ -40,4 +44,12 @@ class CompanyAPI {
         notesToFormat
             .joinToString (separator = "\n") { company ->
                 companies.indexOf(company).toString() + ": " + company.toString() }
+
+    @Throws(Exception::class)
+    fun load() {
+        companies = serializer.read() as ArrayList<Company>
+    }
+
+    @Throws(Exception::class)
+    fun store() = serializer.write(companies)
 }

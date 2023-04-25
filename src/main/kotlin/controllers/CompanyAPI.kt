@@ -32,6 +32,10 @@ class CompanyAPI {
         if (isValidListIndex(index, companies)) companies[index]
         else null
 
+    fun numberOfCompanies(): Int = companies.size
+
+    fun isValidIndex(index: Int): Boolean = isValidListIndex(index, companies)
+
     private fun formatListString(notesToFormat : List<Company>) : String =
         notesToFormat
             .joinToString (separator = "\n") { company ->

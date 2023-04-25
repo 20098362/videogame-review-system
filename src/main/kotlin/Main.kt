@@ -1,4 +1,9 @@
 import utils.ScannerInput
+import kotlin.system.exitProcess
+import controllers.CompanyAPI
+import models.Company
+
+private val companyAPI = CompanyAPI()
 
 const val ansiReset = "\u001B[0m"
 const val ansiRed = "\u001B[31m"
@@ -37,6 +42,7 @@ fun runMenu() {
         val option = mainMenu()
         when (option) {
             1 -> listCompanyMenu()
+            0 -> exitApp()
             else -> println("Invalid option entered: $option")
         }
     } while (true)
@@ -58,9 +64,71 @@ fun listCompanyMenu() {
         )
 
         when (option) {
+            1 -> addCompany()
+            2 -> updateCompany()
+            3 -> deleteCompany()
             4 -> mainMenu()
             else -> println("Invalid option entered: $option")
         }
+}
+
+fun addCompany(){
+
+    val companyName = ScannerInput.readNextLine("Enter the company name: ")
+    val annualRevenue = ScannerInput.readNextInt("Enter the company's annual revenue: ")
+    val foundingYear = ScannerInput.readNextInt("Enter the company's founding year: ")
+    val numOfEmployees = ScannerInput.readNextInt("Enter the number of employees working there: ")
+    val isAdded = companyAPI.addCompany(Company(companyName, annualRevenue, foundingYear, numOfEmployees))
+
+    if (isAdded) println("Created Successfully")
+    else println("Create Failed")
+}
+
+fun listAllCompanies() = println(companyAPI.listAllCompanies())
+
+fun updateCompany() {
+
+    listAllCompanies()
+    if (companyAPI.numberOfCompanies() > 0) {
+        val indexToUpdate = ScannerInput.readNextInt("Enter the index of the company you wish to update: ")
+        if (companyAPI.isValidIndex(indexToUpdate)) {
+            val companyName = ScannerInput.readNextLine("Enter the new company name: ")
+            val annualRevenue = ScannerInput.readNextInt("Enter the new annual revenue: ")
+            val foundingYear = ScannerInput.readNextInt("Enter the new founding year: ")
+            val numOfEmployees = ScannerInput.readNextInt("Enter the new employee number count: ")
+
+            if (companyAPI.updateCompany(indexToUpdate, Company(companyName, annualRevenue, foundingYear, numOfEmployees))){
+                println("Update Successful")
+            } else {
+                println("Update Failed")
+            }
+        } else {
+            println("There are no companies for this index number")
+        }
+    }
+}
+
+fun deleteCompany(){
+
+    listAllCompanies()
+    if (companyAPI.numberOfCompanies() > 0) {
+        val indexToDelete = ScannerInput.readNextInt("Enter the index of the company you wish to delete: ")
+        if (companyAPI.isValidIndex(indexToDelete)){
+            val companyToDelete = companyAPI.deleteCompany(indexToDelete)
+            if (companyToDelete != null) {
+                println("Delete Successful! Deleted company: ${companyToDelete.companyName}")
+            } else {
+                println("Delete unsuccessful")
+            }
+        } else {
+            println("There are no companies for this index number")
+        }
+    }
+}
+
+fun exitApp(){
+    println("Closing app")
+    exitProcess(0)
 }
 
 fun main(args: Array<String>){

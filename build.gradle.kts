@@ -14,6 +14,9 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("org.slf4j:slf4j-simple:2.0.5")
+    implementation("com.thoughtworks.xstream:xstream:1.4.20")
+    implementation("org.codehaus.jettison:jettison:1.5.3")
 }
 
 tasks.test {

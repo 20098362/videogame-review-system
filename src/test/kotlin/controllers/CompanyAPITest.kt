@@ -3,6 +3,8 @@ package controllers
 import models.Company
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertTrue
+import persistence.XMLSerializer
+import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
@@ -15,8 +17,8 @@ class CompanyAPITest {
     private var epicGames: Company? = null
     private var concernedApe: Company? = null
 
-    private var populatedCompanies: CompanyAPI? = CompanyAPI()
-    private var emptyCompanies: CompanyAPI? = CompanyAPI()
+    private var populatedCompanies: CompanyAPI? = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
+    private var emptyCompanies: CompanyAPI? = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
 
     @BeforeEach
     fun setup(){
@@ -127,6 +129,44 @@ class CompanyAPITest {
             assertEquals(1, populatedCompanies!!.findCompany(4)!!.annualRevenue)
             assertEquals(1, populatedCompanies!!.findCompany(4)!!.foundingYear)
             assertEquals(1, populatedCompanies!!.findCompany(4)!!.numOfEmployees)
+        }
+    }
+
+    @Nested
+    inner class PersistenceTests{
+        @Test
+        fun `saving and loading an empty collection in XML doesn't crash app`() {
+
+            val storingCompanies = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
+            storingCompanies.store()
+
+            val loadedCompanies = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
+            loadedCompanies.load()
+
+            assertEquals(0, storingCompanies.numberOfCompanies())
+            assertEquals(0, loadedCompanies.numberOfCompanies())
+            assertEquals(storingCompanies.numberOfCompanies(), loadedCompanies.numberOfCompanies())
+        }
+
+        @Test
+        fun `saving and loading a loaded collection in XML doesn't lose data`() {
+
+            val storingCompanies = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
+            storingCompanies.addCompany(eaSports!!)
+            storingCompanies.addCompany(blizzard!!)
+            storingCompanies.addCompany(steam!!)
+            storingCompanies.store()
+
+            val loadedCompanies = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
+            loadedCompanies.load()
+
+            //Comparing the source of the notes (storingNotes) with the XML loaded notes (loadedNotes)
+            assertEquals(3, storingCompanies.numberOfCompanies())
+            assertEquals(3, loadedCompanies.numberOfCompanies())
+            assertEquals(storingCompanies.numberOfCompanies(), loadedCompanies.numberOfCompanies())
+            assertEquals(storingCompanies.findCompany(0), loadedCompanies.findCompany(0))
+            assertEquals(storingCompanies.findCompany(1), loadedCompanies.findCompany(1))
+            assertEquals(storingCompanies.findCompany(2), loadedCompanies.findCompany(2))
         }
     }
 }

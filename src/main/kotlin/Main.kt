@@ -2,8 +2,10 @@ import utils.ScannerInput
 import kotlin.system.exitProcess
 import controllers.CompanyAPI
 import models.Company
+import persistence.XMLSerializer
+import java.io.File
 
-private val companyAPI = CompanyAPI()
+private val companyAPI = CompanyAPI(XMLSerializer(File("reviewdata.xml")))
 
 const val ansiReset = "\u001B[0m"
 const val ansiRed = "\u001B[31m"
@@ -42,6 +44,8 @@ fun runMenu() {
         val option = mainMenu()
         when (option) {
             1 -> listCompanyMenu()
+            20 -> save()
+            21 -> load()
             0 -> exitApp()
             else -> println("Invalid option entered: $option")
         }
@@ -123,6 +127,22 @@ fun deleteCompany(){
         } else {
             println("There are no companies for this index number")
         }
+    }
+}
+
+fun save() {
+    try {
+        companyAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun load() {
+    try {
+        companyAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
     }
 }
 

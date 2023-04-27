@@ -2,6 +2,7 @@ package controllers
 
 import models.Company
 import persistence.Serializer
+import utils.Utilities.formatListString
 import utils.Utilities.isValidListIndex
 
 class CompanyAPI (serializerType: Serializer){
@@ -39,11 +40,6 @@ class CompanyAPI (serializerType: Serializer){
     fun numberOfCompanies(): Int = companies.size
 
     fun isValidIndex(index: Int): Boolean = isValidListIndex(index, companies)
-
-    private fun formatListString(notesToFormat : List<Company>) : String =
-        notesToFormat
-            .joinToString (separator = "\n") { company ->
-                companies.indexOf(company).toString() + ": " + company.toString() }
 
     @Throws(Exception::class)
     fun load() {

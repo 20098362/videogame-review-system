@@ -1,3 +1,22 @@
 <object-stream>
-  <list/>
+  <list>
+    <models.Company>
+      <companyId>0</companyId>
+      <companyName>Capcom</companyName>
+      <annualRevenue>500000</annualRevenue>
+      <foundingYear>1980</foundingYear>
+      <numOfEmployees>2000</numOfEmployees>
+      <games class="linked-hash-set">
+        <models.VideoGame>
+          <gameId>0</gameId>
+          <title>Pac-Man</title>
+          <platform>XBox</platform>
+          <genre>Action</genre>
+          <budget>50000</budget>
+          <profit>100000</profit>
+        </models.VideoGame>
+      </games>
+      <lastGameId>1</lastGameId>
+    </models.Company>
+  </list>
 </object-stream>

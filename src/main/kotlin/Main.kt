@@ -2,6 +2,7 @@ import utils.ScannerInput
 import kotlin.system.exitProcess
 import controllers.CompanyAPI
 import models.Company
+import models.VideoGame
 import persistence.XMLSerializer
 import java.io.File
 
@@ -44,6 +45,7 @@ fun runMenu() {
         val option = mainMenu()
         when (option) {
             1 -> listCompanyMenu()
+            2 -> listGamesMenu()
             20 -> save()
             21 -> load()
             0 -> exitApp()
@@ -76,57 +78,155 @@ fun listCompanyMenu() {
         }
 }
 
+fun listGamesMenu() {
+    val option = ScannerInput.readNextInt(
+        """
+                  > $ansiCyan--------------------------------------------$ansiReset
+                  > |$ansiRed No. of video games: $ansiReset                       |
+                  > $ansiCyan--------------------------------------------$ansiReset
+                  > |$ansiBlue   1) Create new video game   $ansiReset               |
+                  > |$ansiBlue   2) Update existing video game $ansiReset            |
+                  > |$ansiBlue   3) Delete existing video game $ansiReset            |
+                  > $ansiCyan--------------------------------------------$ansiReset
+                  > |$ansiBlue   4) Back $ansiReset                               |
+                  > $ansiCyan--------------------------------------------$ansiReset
+         >$ansiGreen ==>> """.trimMargin(">")
+    )
+
+    when (option) {
+        1 -> addVideoGameToCompany()
+        2 -> updateVideoGameInCompany()
+        3 -> deleteVideoGame()
+        4 -> mainMenu()
+        else -> println("Invalid option entered: $option")
+    }
+}
+
 fun addCompany(){
 
     val companyName = ScannerInput.readNextLine("Enter the company name: ")
     val annualRevenue = ScannerInput.readNextInt("Enter the company's annual revenue: ")
     val foundingYear = ScannerInput.readNextInt("Enter the company's founding year: ")
     val numOfEmployees = ScannerInput.readNextInt("Enter the number of employees working there: ")
-    val isAdded = companyAPI.addCompany(Company(companyName, annualRevenue, foundingYear, numOfEmployees))
+    val isAdded = companyAPI.addCompany(Company(companyName =  companyName,
+        annualRevenue =  annualRevenue,
+        foundingYear =  foundingYear,
+        numOfEmployees = numOfEmployees))
 
     if (isAdded) println("Created Successfully")
     else println("Create Failed")
 }
 
-fun listAllCompanies() = println(companyAPI.listAllCompanies())
-
 fun updateCompany() {
-
     listAllCompanies()
     if (companyAPI.numberOfCompanies() > 0) {
-        val indexToUpdate = ScannerInput.readNextInt("Enter the index of the company you wish to update: ")
-        if (companyAPI.isValidIndex(indexToUpdate)) {
+        val id = ScannerInput.readNextInt("Enter the index of the company you wish to update: ")
+        if (companyAPI.findCompany(id) != null) {
             val companyName = ScannerInput.readNextLine("Enter the new company name: ")
             val annualRevenue = ScannerInput.readNextInt("Enter the new annual revenue: ")
             val foundingYear = ScannerInput.readNextInt("Enter the new founding year: ")
             val numOfEmployees = ScannerInput.readNextInt("Enter the new employee number count: ")
 
-            if (companyAPI.updateCompany(indexToUpdate, Company(companyName, annualRevenue, foundingYear, numOfEmployees))){
+            if (companyAPI.updateCompany(id, Company(0, companyName, annualRevenue, foundingYear, numOfEmployees))){
                 println("Update Successful")
             } else {
                 println("Update Failed")
             }
         } else {
-            println("There are no companies for this index number")
+            println("There are no notes for this index number")
         }
     }
 }
 
-fun deleteCompany(){
-
+fun deleteCompany() {
     listAllCompanies()
     if (companyAPI.numberOfCompanies() > 0) {
-        val indexToDelete = ScannerInput.readNextInt("Enter the index of the company you wish to delete: ")
-        if (companyAPI.isValidIndex(indexToDelete)){
-            val companyToDelete = companyAPI.deleteCompany(indexToDelete)
-            if (companyToDelete != null) {
-                println("Delete Successful! Deleted company: ${companyToDelete.companyName}")
+        // only ask the user to choose the note to delete if notes exist
+        val id = ScannerInput.readNextInt("Enter the id of the note to delete: ")
+        // pass the index of the note to NoteAPI for deleting and check for success.
+        val companyToDelete = companyAPI.deleteCompany(id)
+        if (companyToDelete) {
+            println("Delete Successful!")
+        } else {
+            println("Delete NOT Successful")
+        }
+    }
+}
+
+private fun addVideoGameToCompany() {
+    val company: Company? = askUserToChooseCompany()
+    if (company != null) {
+        if (company.addVideoGame(VideoGame(title = ScannerInput.readNextLine("Enter the video game title: "),
+            platform = ScannerInput.readNextLine("Enter the game's platform: "),
+            genre = ScannerInput.readNextLine("Enter the game's genre: "),
+            budget = ScannerInput.readNextInt("Enter the game's budget: "),
+            profit = ScannerInput.readNextInt("Enter the game's profits: "))))
+            println("Add Successful!")
+        else println("Add NOT Successful")
+    }
+}
+
+fun updateVideoGameInCompany() {
+    val company: Company? = askUserToChooseCompany()
+    if (company != null) {
+        val game: VideoGame? = askUserToChooseVideoGame(company)
+        if (game != null) {
+            val title = ScannerInput.readNextLine("Enter the video game title: ")
+            val platform = ScannerInput.readNextLine("Enter the game's platform: ")
+            val genre = ScannerInput.readNextLine("Enter the game's genre: ")
+            val budget = ScannerInput.readNextInt("Enter the game's budget: ")
+            val profit = ScannerInput.readNextInt("Enter the game's profits: ")
+            if (company.update(game.gameId, VideoGame(title = title,
+                platform = platform,
+                genre = genre,
+                budget = budget,
+                profit = profit))) {
+                println("Game contents updated")
             } else {
-                println("Delete unsuccessful")
+                println("Game contents NOT updated")
             }
         } else {
-            println("There are no companies for this index number")
+            println("Invalid gameId")
         }
+    }
+}
+
+fun deleteVideoGame() {
+    val company: Company? = askUserToChooseCompany()
+    if (company != null) {
+        val game: VideoGame? = askUserToChooseVideoGame(company)
+        if (game != null) {
+            val isDeleted = company.delete(game.gameId)
+            if (isDeleted) {
+                println("Delete Successful!")
+            } else {
+                println("Delete NOT Successful")
+            }
+        }
+    }
+}
+
+fun listAllCompanies() = println(companyAPI.listAllCompanies())
+
+private fun askUserToChooseCompany(): Company? {
+    listAllCompanies()
+    if (companyAPI.numberOfCompanies() > 0) {
+        val company = companyAPI.findCompany(ScannerInput.readNextInt("\nEnter the index of the company: "))
+        if (company != null) return company
+    } else {
+        println("Company index is not valid")
+    }
+    return null
+}
+
+private fun askUserToChooseVideoGame(company: Company): VideoGame? {
+    return if (company.numberOfGames() > 0) {
+        print(company.listVideoGames())
+        company.findOne(ScannerInput.readNextInt("\nEnter the id of the video game: "))
+    }
+    else{
+        println ("No video game for chosen company")
+        null
     }
 }
 

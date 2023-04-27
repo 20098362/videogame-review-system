@@ -1,13 +1,16 @@
 package controllers
 
 import models.Company
-import org.junit.jupiter.api.*
+import models.VideoGame
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
 import persistence.XMLSerializer
 import java.io.File
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
-import kotlin.test.assertNull
 
 class CompanyAPITest {
 
@@ -17,22 +20,34 @@ class CompanyAPITest {
     private var epicGames: Company? = null
     private var concernedApe: Company? = null
 
+    private var fifa: VideoGame? = null
+    private var portal: VideoGame? = null
+    private var tf2:VideoGame? = null
+
     private var populatedCompanies: CompanyAPI? = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
     private var emptyCompanies: CompanyAPI? = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
 
     @BeforeEach
     fun setup(){
-        eaSports = Company("EA Sports", 100000, 1990, 2000)
-        blizzard = Company("Blizzard Entertainment", 150000, 1989, 1000)
-        steam = Company("Steam", 500000, 2000, 5000)
-        epicGames = Company("Epic Games", 350000, 2010, 1500)
-        concernedApe = Company("Concerned Ape", 50000, 2012, 500)
+        eaSports = Company(0 ,"EA Sports", 100000, 1990, 2000)
+        blizzard = Company(1, "Blizzard Entertainment", 150000, 1989, 1000)
+        steam = Company(2, "Steam", 500000, 2000, 5000)
+        epicGames = Company(3, "Epic Games", 350000, 2010, 1500)
+        concernedApe = Company(4, "Concerned Ape", 50000, 2012, 500)
+
+        fifa = VideoGame(0, "FIFA 15", "XBox", "Sports", 100000, 90000)
+        portal = VideoGame(0, "Portal 2", "PC", "Puzzle", 80000, 100000)
+        tf2 = VideoGame(1, "Team Fortress 2", "PC", "FPS", 500000, 200000)
 
         populatedCompanies!!.addCompany(eaSports!!)
         populatedCompanies!!.addCompany(blizzard!!)
         populatedCompanies!!.addCompany(steam!!)
         populatedCompanies!!.addCompany(epicGames!!)
         populatedCompanies!!.addCompany(concernedApe!!)
+
+        eaSports!!.addVideoGame(fifa!!)
+        steam!!.addVideoGame(portal!!)
+        steam!!.addVideoGame(tf2!!)
     }
 
     @AfterEach
@@ -42,6 +57,7 @@ class CompanyAPITest {
         steam = null
         epicGames = null
         concernedApe = null
+        fifa = null
         populatedCompanies = null
         emptyCompanies = null
     }
@@ -50,7 +66,7 @@ class CompanyAPITest {
     inner class AddCompanies {
         @Test
         fun `adding a Company to a populated list adds to ArrayList`() {
-            val newCompany = Company("Konami", 75000, 1999, 8000)
+            val newCompany = Company(5, "Konami", 75000, 1999, 8000)
             assertEquals(5, populatedCompanies!!.numberOfCompanies())
             assertTrue(populatedCompanies!!.addCompany(newCompany))
             assertEquals(6, populatedCompanies!!.numberOfCompanies())
@@ -59,7 +75,7 @@ class CompanyAPITest {
 
         @Test
         fun `adding a Company to an empty list adds to ArrayList`() {
-            val newCompany = Company("Konami", 75000, 1999, 8000)
+            val newCompany = Company(0, "Konami", 75000, 1999, 8000)
             assertEquals(0, emptyCompanies!!.numberOfCompanies())
             assertTrue(emptyCompanies!!.addCompany(newCompany))
             assertEquals(1, emptyCompanies!!.numberOfCompanies())
@@ -92,18 +108,21 @@ class CompanyAPITest {
 
         @Test
         fun `deleting a Company that does not exist, returns null`() {
-            assertNull(emptyCompanies!!.deleteCompany(0))
-            assertNull(populatedCompanies!!.deleteCompany(-1))
-            assertNull(populatedCompanies!!.deleteCompany(5))
+            assertFalse(emptyCompanies!!.deleteCompany(0))
+            assertFalse(populatedCompanies!!.deleteCompany(-1))
+            assertFalse(populatedCompanies!!.deleteCompany(5))
         }
 
         @Test
         fun `deleting a Company that exists delete and returns deleted object`() {
             assertEquals(5, populatedCompanies!!.numberOfCompanies())
-            assertEquals(concernedApe, populatedCompanies!!.deleteCompany(4))
+            assertTrue(populatedCompanies!!.deleteCompany(4))
             assertEquals(4, populatedCompanies!!.numberOfCompanies())
-            assertEquals(eaSports, populatedCompanies!!.deleteCompany(0))
+            assertTrue(populatedCompanies!!.deleteCompany(0))
             assertEquals(3, populatedCompanies!!.numberOfCompanies())
+            assertEquals(blizzard, populatedCompanies!!.findCompany(0))
+            assertEquals(steam, populatedCompanies!!.findCompany(1))
+            assertEquals(epicGames, populatedCompanies!!.findCompany(2))
         }
     }
 
@@ -111,9 +130,9 @@ class CompanyAPITest {
     inner class UpdateNotes {
         @Test
         fun `updating a Company that does not exist returns false`(){
-            assertFalse(populatedCompanies!!.updateCompany(6, Company("Updating Company", 1, 1, 1)))
-            assertFalse(populatedCompanies!!.updateCompany(-1, Company("Updating Company", 1, 1, 1)))
-            assertFalse(emptyCompanies!!.updateCompany(0, Company("Updating Company", 1, 1, 1)))
+            assertFalse(populatedCompanies!!.updateCompany(6, Company(7, "Updating Company", 1, 1, 1)))
+            assertFalse(populatedCompanies!!.updateCompany(-1, Company(7, "Updating Company", 1, 1, 1)))
+            assertFalse(emptyCompanies!!.updateCompany(0, Company(7, "Updating Company", 1, 1, 1)))
         }
 
         @Test
@@ -124,11 +143,110 @@ class CompanyAPITest {
             assertEquals(2012, populatedCompanies!!.findCompany(4)!!.foundingYear)
             assertEquals(500, populatedCompanies!!.findCompany(4)!!.numOfEmployees)
 
-            assertTrue(populatedCompanies!!.updateCompany(4, Company("Updating Company", 1, 1, 1)))
+            assertTrue(populatedCompanies!!.updateCompany(4, Company(5, "Updating Company", 1, 1, 1)))
             assertEquals("Updating Company", populatedCompanies!!.findCompany(4)!!.companyName)
             assertEquals(1, populatedCompanies!!.findCompany(4)!!.annualRevenue)
             assertEquals(1, populatedCompanies!!.findCompany(4)!!.foundingYear)
             assertEquals(1, populatedCompanies!!.findCompany(4)!!.numOfEmployees)
+        }
+    }
+
+    @Nested
+    inner class AddVideoGames{
+        @Test
+        fun `adding a VideoGame to a Company with existing VideoGames`() {
+
+            val getCompany = populatedCompanies!!.findCompany(0)
+            val company: Company? = getCompany
+            val newVideoGame = VideoGame(1, "The Sims", "PC", "Simulation", 80000, 120000)
+            assertEquals(1, company!!.numberOfGames())
+            assertTrue(company.addVideoGame(newVideoGame))
+            assertEquals(2, company.numberOfGames())
+            assertEquals(newVideoGame, company.findOne(company.numberOfGames() - 1))
+        }
+
+        @Test
+        fun `adding a VideoGame to a Company with no VideoGames`() {
+            val getCompany = populatedCompanies!!.findCompany(1)
+            val company: Company? = getCompany
+            val newVideoGame = VideoGame(0, "Overwatch", "PC", "FPS", 800000, 700000)
+            assertEquals(0, company!!.numberOfGames())
+            assertTrue(company.addVideoGame(newVideoGame))
+            assertEquals(1, company.numberOfGames())
+            assertEquals(newVideoGame, company.findOne(company.numberOfGames() - 1))
+        }
+    }
+
+    @Nested
+    inner class ListVideoGames{
+        @Test
+        fun `listVideoGames returns No VideoGames Stored message when no games present`() {
+            val getCompany = populatedCompanies!!.findCompany(1)
+            val company: Company? = getCompany
+            assertEquals(0, company!!.numberOfGames())
+            assertTrue(company.listVideoGames().lowercase().contains("no games"))
+        }
+
+        @Test
+        fun `listVideoGames returns VideoGames when games are stored`() {
+            val getCompany = populatedCompanies!!.findCompany(0)
+            val company: Company? = getCompany
+            assertEquals(1, company!!.numberOfGames())
+            val gameString = company.listVideoGames().lowercase()
+            assertTrue(gameString.contains("fifa"))
+        }
+    }
+
+    @Nested
+    inner class DeleteVideoGames{
+        @Test
+        fun `deleting a VideoGame that does not exist, returns null`() {
+            val getCompany = populatedCompanies!!.findCompany(1)
+            val company: Company? = getCompany
+            assertFalse(company!!.delete(0))
+            assertFalse(company.delete(-1))
+            assertFalse(company.delete(5))
+        }
+
+        @Test
+        fun `deleting a VideoGame that exists delete and returns deleted object`() {
+            val getCompany = populatedCompanies!!.findCompany(2)
+            val company: Company? = getCompany
+            assertEquals(2, company!!.numberOfGames())
+            assertTrue(company.delete(1))
+            assertEquals(1, company.numberOfGames())
+            assertEquals(portal, company.findOne(0))
+        }
+    }
+
+    @Nested
+    inner class UpdateVideoGames{
+        @Test
+        fun `updating a VideoGame that does not exist returns false`(){
+            val getCompany = populatedCompanies!!.findCompany(1)
+            val company: Company? = getCompany
+            assertFalse(company!!.update(6, VideoGame(7, "Updating Game", "None", "None", 1, 1 )))
+            assertFalse(company.update(-1, VideoGame(7, "Updating Game", "None", "None", 1, 1 )))
+            assertFalse(company.update(0, VideoGame(7, "Updating Game", "None", "None", 1, 1 )))
+        }
+
+        @Test
+        fun `updating a note that exists returns true and updates`() {
+            val getCompany = populatedCompanies!!.findCompany(0)
+            val company: Company? = getCompany
+            assertEquals(fifa, company!!.findOne(0))
+            assertEquals("FIFA 15", company.findOne(0)!!.title)
+            assertEquals("XBox", company.findOne(0)!!.platform)
+            assertEquals("Sports", company.findOne(0)!!.genre)
+            assertEquals(100000, company.findOne(0)!!.budget)
+            assertEquals(90000, company.findOne(0)!!.profit)
+
+            assertTrue(company.update(0, VideoGame(0, "Updating Company", "New", "New", 1, 1)))
+            assertEquals("Updating Company", company.findOne(0)!!.title)
+            assertEquals("New", company.findOne(0)!!.platform)
+            assertEquals("New", company.findOne(0)!!.genre)
+            assertEquals(1, company.findOne(0)!!.budget)
+            assertEquals(1, company.findOne(0)!!.profit)
         }
     }
 

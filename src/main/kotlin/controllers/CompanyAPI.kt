@@ -1,7 +1,9 @@
 package controllers
 
 import models.Company
+import models.VideoGame
 import persistence.Serializer
+import utils.ScannerInput
 import utils.Utilities.formatListString
 import utils.Utilities.isValidListIndex
 
@@ -42,8 +44,6 @@ class CompanyAPI (serializerType: Serializer){
         else null
 
     fun numberOfCompanies(): Int = companies.size
-
-    fun isValidIndex(index: Int): Boolean = isValidListIndex(index, companies)
 
     @Throws(Exception::class)
     fun load() {

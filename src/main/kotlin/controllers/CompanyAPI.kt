@@ -11,14 +11,18 @@ class CompanyAPI (serializerType: Serializer){
 
     private var companies =ArrayList<Company>()
 
-    fun addCompany(company: Company): Boolean = companies.add(company)
+    private var lastId = 0
+    private fun getId() = lastId++
 
-    fun deleteCompany(indexToDelete: Int): Company? =
-        if (isValidListIndex(indexToDelete, companies)) companies.removeAt(indexToDelete)
-        else null
+    fun addCompany(company: Company): Boolean{
+        company.companyId = getId()
+        return companies.add(company)
+    }
 
-    fun updateCompany(indexToUpdate: Int, company: Company): Boolean {
-        val foundCompany = findCompany(indexToUpdate)
+    fun deleteCompany(id: Int) = companies.removeIf { company -> company.companyId == id }
+
+    fun updateCompany(id: Int, company: Company): Boolean {
+        val foundCompany = findCompany(id)
         if ((foundCompany != null) && (company != null)) {
             foundCompany.companyName = company.companyName
             foundCompany.annualRevenue = company.annualRevenue

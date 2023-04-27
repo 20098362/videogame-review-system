@@ -3,6 +3,7 @@ package models
 import utils.Utilities
 
 data class Company(
+    var companyId: Int = 0,
     var companyName: String,
     var annualRevenue: Int,
     var foundingYear: Int,

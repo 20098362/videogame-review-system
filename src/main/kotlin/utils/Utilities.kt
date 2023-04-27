@@ -1,6 +1,7 @@
 package utils
 
 import models.Company
+import models.VideoGame
 
 object Utilities {
     @JvmStatic

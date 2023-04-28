@@ -9,5 +9,23 @@
       <games class="linked-hash-set"/>
       <lastGameId>0</lastGameId>
     </models.Company>
+    <models.Company>
+      <companyId>0</companyId>
+      <companyName>Bandi Namco</companyName>
+      <annualRevenue>150000</annualRevenue>
+      <foundingYear>1989</foundingYear>
+      <numOfEmployees>8000</numOfEmployees>
+      <games class="linked-hash-set"/>
+      <lastGameId>0</lastGameId>
+    </models.Company>
+    <models.Company>
+      <companyId>1</companyId>
+      <companyName>Wizards of the Coast</companyName>
+      <annualRevenue>110000</annualRevenue>
+      <foundingYear>1999</foundingYear>
+      <numOfEmployees>5500</numOfEmployees>
+      <games class="linked-hash-set"/>
+      <lastGameId>0</lastGameId>
+    </models.Company>
   </list>
 </object-stream>

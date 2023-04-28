@@ -106,9 +106,9 @@ fun listStatsMenu() {
         """
                   > $ansiCyan--------------------------------------------$ansiReset
                   > |$ansiRed No. of companies: ${companyAPI.numberOfCompanies()} $ansiReset                     |
-                  > |$ansiRed Total employees: ${companyAPI.numberOfCompanies()} $ansiReset                     |
-                  > |$ansiRed Average employees per company: ${companyAPI.numberOfCompanies()} $ansiReset                     |
-                  > |$ansiRed Average revenue per company: ${companyAPI.numberOfCompanies()} $ansiReset                     |
+                  > |$ansiRed Total employees: ${companyAPI.totalEmployees()} $ansiReset                     |
+                  > |$ansiRed Average employees per company: ${companyAPI.totalEmployees()/companyAPI.numberOfCompanies()} $ansiReset                     |
+                  > |$ansiRed Average revenue per company: ${companyAPI.averageRevenue()} $ansiReset                     |
                   > $ansiCyan--------------------------------------------$ansiReset
                   > |$ansiBlue   1) List all companies + games   $ansiReset               |
                   > |$ansiBlue   2) List companies formed before 2000 $ansiReset            |
@@ -122,9 +122,11 @@ fun listStatsMenu() {
     )
 
     when (option) {
-        1 -> addCompany()
-        2 -> updateCompany()
-        3 -> deleteCompany()
+        1 -> listAllCompanies()
+        2 -> listAllBefore()
+        3 -> listAllAfter()
+        4 -> listOverRevenue()
+        5 -> listOverEmployees()
         0 -> runMenu()
         else -> println("Invalid option entered: $option")
     }
@@ -235,6 +237,14 @@ fun deleteVideoGame() {
 }
 
 fun listAllCompanies() = println(companyAPI.listAllCompanies())
+
+fun listAllBefore() = println(companyAPI.listAllBefore())
+
+fun listAllAfter() = println(companyAPI.listAllAfter())
+
+fun listOverRevenue() = println(companyAPI.listOverRevenue())
+
+fun listOverEmployees() = println(companyAPI.listOverEmployees())
 
 private fun askUserToChooseCompany(): Company? {
     listAllCompanies()

@@ -4,15 +4,15 @@
  * @author Troy Barrett 20098362
  */
 
-import utils.ScannerInput
-import kotlin.system.exitProcess
 import controllers.CompanyAPI
 import models.Company
 import models.VideoGame
 import persistence.XMLSerializer
+import utils.ScannerInput
 import java.io.File
+import kotlin.system.exitProcess
 
-private val companyAPI = CompanyAPI(XMLSerializer(File("reviewdata.xml")))
+private val companyAPI = CompanyAPI(XMLSerializer(File("review-data.xml")))
 
 const val ansiReset = "\u001B[0m"
 const val ansiRed = "\u001B[31m"
@@ -27,7 +27,7 @@ const val ansiCyan = "\u001B[36m"
  *
  * @return Int;used as the menu controller option
  */
-fun mainMenu() : Int {
+fun mainMenu(): Int {
     return ScannerInput.readNextInt(
         """ 
          > $ansiCyan--------------------------------------------$ansiReset
@@ -58,8 +58,7 @@ fun mainMenu() : Int {
  */
 fun runMenu() {
     do {
-        val option = mainMenu()
-        when (option) {
+        when (val option = mainMenu()) {
             1 -> listCompanyMenu()
             2 -> listGamesMenu()
             3 -> listStatsMenu()
@@ -76,8 +75,8 @@ fun runMenu() {
  * Also takes in an Int from the user to determine which function they wish to perform
  */
 fun listCompanyMenu() {
-        val option = ScannerInput.readNextInt(
-            """
+    val option = ScannerInput.readNextInt(
+        """
                   > $ansiCyan--------------------------------------------$ansiReset
                   > |$ansiRed No. of companies: ${companyAPI.numberOfCompanies()} $ansiReset                     |
                   > $ansiCyan--------------------------------------------$ansiReset
@@ -88,15 +87,15 @@ fun listCompanyMenu() {
                   > |$ansiBlue   4) Back $ansiReset                               |
                   > $ansiCyan--------------------------------------------$ansiReset
          >$ansiGreen ==>> """.trimMargin(">")
-        )
+    )
 
-        when (option) {
-            1 -> addCompany()
-            2 -> updateCompany()
-            3 -> deleteCompany()
-            4 -> runMenu()
-            else -> println("Invalid option entered: $option")
-        }
+    when (option) {
+        1 -> addCompany()
+        2 -> updateCompany()
+        3 -> deleteCompany()
+        4 -> runMenu()
+        else -> println("Invalid option entered: $option")
+    }
 }
 
 /**
@@ -135,7 +134,7 @@ fun listStatsMenu() {
                   > $ansiCyan--------------------------------------------$ansiReset
                   > |$ansiRed No. of companies: ${companyAPI.numberOfCompanies()} $ansiReset                     |
                   > |$ansiRed Total employees: ${companyAPI.totalEmployees()} $ansiReset                  |
-                  > |$ansiRed Average employees per company: ${companyAPI.totalEmployees()/companyAPI.numberOfCompanies()} $ansiReset     |
+                  > |$ansiRed Average employees per company: ${companyAPI.totalEmployees() / companyAPI.numberOfCompanies()} $ansiReset     |
                   > |$ansiRed Average revenue per company: ${companyAPI.averageRevenue()} $ansiReset     |
                   > $ansiCyan--------------------------------------------$ansiReset
                   > |$ansiBlue   1) List all companies + games   $ansiReset       |
@@ -163,16 +162,20 @@ fun listStatsMenu() {
 /**
  * Takes in the values entered by the user then creates a Company object which is then added to the companies ArrayList
  */
-fun addCompany(){
+fun addCompany() {
 
     val companyName = ScannerInput.readNextLine("Enter the company name: ")
     val annualRevenue = ScannerInput.readNextInt("Enter the company's annual revenue: ")
     val foundingYear = ScannerInput.readNextInt("Enter the company's founding year: ")
     val numOfEmployees = ScannerInput.readNextInt("Enter the number of employees working there: ")
-    val isAdded = companyAPI.addCompany(Company(companyName =  companyName,
-        annualRevenue =  annualRevenue,
-        foundingYear =  foundingYear,
-        numOfEmployees = numOfEmployees))
+    val isAdded = companyAPI.addCompany(
+        Company(
+            companyName = companyName,
+            annualRevenue = annualRevenue,
+            foundingYear = foundingYear,
+            numOfEmployees = numOfEmployees
+        )
+    )
 
     if (isAdded) println("Created Successfully")
     else println("Create Failed")
@@ -191,7 +194,7 @@ fun updateCompany() {
             val foundingYear = ScannerInput.readNextInt("Enter the new founding year: ")
             val numOfEmployees = ScannerInput.readNextInt("Enter the new employee number count: ")
 
-            if (companyAPI.updateCompany(id, Company(0, companyName, annualRevenue, foundingYear, numOfEmployees))){
+            if (companyAPI.updateCompany(id, Company(0, companyName, annualRevenue, foundingYear, numOfEmployees))) {
                 println("Update Successful")
             } else {
                 println("Update Failed")
@@ -227,11 +230,16 @@ fun deleteCompany() {
 fun addVideoGameToCompany() {
     val company: Company? = askUserToChooseCompany()
     if (company != null) {
-        if (company.addVideoGame(VideoGame(title = ScannerInput.readNextLine("Enter the video game title: "),
-            platform = ScannerInput.readNextLine("Enter the game's platform: "),
-            genre = ScannerInput.readNextLine("Enter the game's genre: "),
-            budget = ScannerInput.readNextInt("Enter the game's budget: "),
-            profit = ScannerInput.readNextInt("Enter the game's profits: "))))
+        if (company.addVideoGame(
+                VideoGame(
+                        title = ScannerInput.readNextLine("Enter the video game title: "),
+                        platform = ScannerInput.readNextLine("Enter the game's platform: "),
+                        genre = ScannerInput.readNextLine("Enter the game's genre: "),
+                        budget = ScannerInput.readNextInt("Enter the game's budget: "),
+                        profit = ScannerInput.readNextInt("Enter the game's profits: ")
+                    )
+            )
+        )
             println("Add Successful!")
         else println("Add NOT Successful")
     }
@@ -250,11 +258,17 @@ fun updateVideoGameInCompany() {
             val genre = ScannerInput.readNextLine("Enter the game's genre: ")
             val budget = ScannerInput.readNextInt("Enter the game's budget: ")
             val profit = ScannerInput.readNextInt("Enter the game's profits: ")
-            if (company.update(game.gameId, VideoGame(title = title,
-                platform = platform,
-                genre = genre,
-                budget = budget,
-                profit = profit))) {
+            if (company.update(
+                    game.gameId,
+                    VideoGame(
+                            title = title,
+                            platform = platform,
+                            genre = genre,
+                            budget = budget,
+                            profit = profit
+                        )
+                )
+            ) {
                 println("Game contents updated")
             } else {
                 println("Game contents NOT updated")
@@ -334,9 +348,8 @@ fun askUserToChooseVideoGame(company: Company): VideoGame? {
     return if (company.numberOfGames() > 0) {
         print(company.listVideoGames())
         company.findOne(ScannerInput.readNextInt("\nEnter the id of the video game: "))
-    }
-    else{
-        println ("No video game for chosen company")
+    } else {
+        println("No video game for chosen company")
         null
     }
 }
@@ -366,7 +379,7 @@ fun load() {
 /**
  * Closes the console app
  */
-fun exitApp(){
+fun exitApp() {
     println("Closing app")
     exitProcess(0)
 }
@@ -374,6 +387,4 @@ fun exitApp(){
 /**
  * Starts the console app
  */
-fun main(args: Array<String>){
-    runMenu()
-}
+fun main() = runMenu()

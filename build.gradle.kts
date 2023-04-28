@@ -2,7 +2,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.8.0"
+    // Dokka
     id("org.jetbrains.dokka") version "1.6.10"
+    jacoco
+    // Linting
+    id("org.jlleitschuh.gradle.ktlint") version "10.2.1"
     application
 }
 

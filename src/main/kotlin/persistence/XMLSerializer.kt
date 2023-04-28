@@ -1,12 +1,12 @@
 package persistence
 
+import com.thoughtworks.xstream.XStream
+import com.thoughtworks.xstream.io.xml.DomDriver
 import models.Company
 import models.VideoGame
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
-import com.thoughtworks.xstream.XStream
-import com.thoughtworks.xstream.io.xml.DomDriver
 
 /**
  * XMLSerializer Persistence Manager

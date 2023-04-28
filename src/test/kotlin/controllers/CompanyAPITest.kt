@@ -22,14 +22,14 @@ class CompanyAPITest {
 
     private var fifa: VideoGame? = null
     private var portal: VideoGame? = null
-    private var tf2:VideoGame? = null
+    private var tf2: VideoGame? = null
 
-    private var populatedCompanies: CompanyAPI? = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
-    private var emptyCompanies: CompanyAPI? = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
+    private var populatedCompanies: CompanyAPI? = CompanyAPI(XMLSerializer(File("test-data.xml")))
+    private var emptyCompanies: CompanyAPI? = CompanyAPI(XMLSerializer(File("test-data.xml")))
 
     @BeforeEach
-    fun setup(){
-        eaSports = Company(0 ,"EA Sports", 100000, 1990, 2000)
+    fun setup() {
+        eaSports = Company(0, "EA Sports", 100000, 1990, 2000)
         blizzard = Company(1, "Blizzard Entertainment", 10000, 1989, 1000)
         steam = Company(2, "Steam", 500000, 2000, 5100)
         epicGames = Company(3, "Epic Games", 350000, 2010, 1500)
@@ -51,7 +51,7 @@ class CompanyAPITest {
     }
 
     @AfterEach
-    fun tearDown(){
+    fun tearDown() {
         eaSports = null
         blizzard = null
         steam = null
@@ -66,7 +66,7 @@ class CompanyAPITest {
     inner class AddCompanies {
         @Test
         fun `adding a Company to a populated list adds to ArrayList`() {
-            val newCompany = Company(5, "Konami", 75000, 1999, 8000)
+            val newCompany = Company(5, "Spire", 75000, 1999, 8000)
             assertEquals(5, populatedCompanies!!.numberOfCompanies())
             assertTrue(populatedCompanies!!.addCompany(newCompany))
             assertEquals(6, populatedCompanies!!.numberOfCompanies())
@@ -75,7 +75,7 @@ class CompanyAPITest {
 
         @Test
         fun `adding a Company to an empty list adds to ArrayList`() {
-            val newCompany = Company(0, "Konami", 75000, 1999, 8000)
+            val newCompany = Company(0, "Spire", 75000, 1999, 8000)
             assertEquals(0, emptyCompanies!!.numberOfCompanies())
             assertTrue(emptyCompanies!!.addCompany(newCompany))
             assertEquals(1, emptyCompanies!!.numberOfCompanies())
@@ -129,7 +129,7 @@ class CompanyAPITest {
     @Nested
     inner class UpdateNotes {
         @Test
-        fun `updating a Company that does not exist returns false`(){
+        fun `updating a Company that does not exist returns false`() {
             assertFalse(populatedCompanies!!.updateCompany(6, Company(7, "Updating Company", 1, 1, 1)))
             assertFalse(populatedCompanies!!.updateCompany(-1, Company(7, "Updating Company", 1, 1, 1)))
             assertFalse(emptyCompanies!!.updateCompany(0, Company(7, "Updating Company", 1, 1, 1)))
@@ -152,7 +152,7 @@ class CompanyAPITest {
     }
 
     @Nested
-    inner class AddVideoGames{
+    inner class AddVideoGames {
         @Test
         fun `adding a VideoGame to a Company with existing VideoGames`() {
 
@@ -169,7 +169,7 @@ class CompanyAPITest {
         fun `adding a VideoGame to a Company with no VideoGames`() {
             val getCompany = populatedCompanies!!.findCompany(1)
             val company: Company? = getCompany
-            val newVideoGame = VideoGame(0, "Overwatch", "PC", "FPS", 800000, 700000)
+            val newVideoGame = VideoGame(0, "Over-watch", "PC", "FPS", 800000, 700000)
             assertEquals(0, company!!.numberOfGames())
             assertTrue(company.addVideoGame(newVideoGame))
             assertEquals(1, company.numberOfGames())
@@ -178,7 +178,7 @@ class CompanyAPITest {
     }
 
     @Nested
-    inner class ListVideoGames{
+    inner class ListVideoGames {
         @Test
         fun `listVideoGames returns No VideoGames Stored message when no games present`() {
             val getCompany = populatedCompanies!!.findCompany(1)
@@ -198,7 +198,7 @@ class CompanyAPITest {
     }
 
     @Nested
-    inner class DeleteVideoGames{
+    inner class DeleteVideoGames {
         @Test
         fun `deleting a VideoGame that does not exist, returns null`() {
             val getCompany = populatedCompanies!!.findCompany(1)
@@ -220,14 +220,14 @@ class CompanyAPITest {
     }
 
     @Nested
-    inner class UpdateVideoGames{
+    inner class UpdateVideoGames {
         @Test
-        fun `updating a VideoGame that does not exist returns false`(){
+        fun `updating a VideoGame that does not exist returns false`() {
             val getCompany = populatedCompanies!!.findCompany(1)
             val company: Company? = getCompany
-            assertFalse(company!!.update(6, VideoGame(7, "Updating Game", "None", "None", 1, 1 )))
-            assertFalse(company.update(-1, VideoGame(7, "Updating Game", "None", "None", 1, 1 )))
-            assertFalse(company.update(0, VideoGame(7, "Updating Game", "None", "None", 1, 1 )))
+            assertFalse(company!!.update(6, VideoGame(7, "Updating Game", "None", "None", 1, 1)))
+            assertFalse(company.update(-1, VideoGame(7, "Updating Game", "None", "None", 1, 1)))
+            assertFalse(company.update(0, VideoGame(7, "Updating Game", "None", "None", 1, 1)))
         }
 
         @Test
@@ -251,14 +251,14 @@ class CompanyAPITest {
     }
 
     @Nested
-    inner class PersistenceTests{
+    inner class PersistenceTests {
         @Test
         fun `saving and loading an empty collection in XML doesn't crash app`() {
 
-            val storingCompanies = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
+            val storingCompanies = CompanyAPI(XMLSerializer(File("test-data.xml")))
             storingCompanies.store()
 
-            val loadedCompanies = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
+            val loadedCompanies = CompanyAPI(XMLSerializer(File("test-data.xml")))
             loadedCompanies.load()
 
             assertEquals(0, storingCompanies.numberOfCompanies())
@@ -269,16 +269,16 @@ class CompanyAPITest {
         @Test
         fun `saving and loading a loaded collection in XML doesn't lose data`() {
 
-            val storingCompanies = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
+            val storingCompanies = CompanyAPI(XMLSerializer(File("test-data.xml")))
             storingCompanies.addCompany(eaSports!!)
             storingCompanies.addCompany(blizzard!!)
             storingCompanies.addCompany(steam!!)
             storingCompanies.store()
 
-            val loadedCompanies = CompanyAPI(XMLSerializer(File("testreviewdata.xml")))
+            val loadedCompanies = CompanyAPI(XMLSerializer(File("test-data.xml")))
             loadedCompanies.load()
 
-            //Comparing the source of the notes (storingNotes) with the XML loaded notes (loadedNotes)
+            // Comparing the source of the notes (storingNotes) with the XML loaded notes (loadedNotes)
             assertEquals(3, storingCompanies.numberOfCompanies())
             assertEquals(3, loadedCompanies.numberOfCompanies())
             assertEquals(storingCompanies.numberOfCompanies(), loadedCompanies.numberOfCompanies())
@@ -289,25 +289,25 @@ class CompanyAPITest {
     }
 
     @Nested
-    inner class CountingTests{
+    inner class CountingTests {
         @Test
-        fun `total number of employees returns the correct value in a populated array`(){
+        fun `total number of employees returns the correct value in a populated array`() {
             assertEquals(15100, populatedCompanies!!.totalEmployees())
         }
 
         @Test
-        fun `average employees counts correctly when counting a populated array`(){
-            assertEquals(3020, populatedCompanies!!.totalEmployees()/populatedCompanies!!.numberOfCompanies())
+        fun `average employees counts correctly when counting a populated array`() {
+            assertEquals(3020, populatedCompanies!!.totalEmployees() / populatedCompanies!!.numberOfCompanies())
         }
 
         @Test
-        fun `average revenue counts correctly when counting a populated array`(){
+        fun `average revenue counts correctly when counting a populated array`() {
             assertEquals(202000, populatedCompanies!!.averageRevenue())
         }
     }
 
     @Nested
-    inner class ListBeforeTests{
+    inner class ListBeforeTests {
         @Test
         fun `listAllBefore returns No Companies Stored message when ArrayList is empty`() {
             assertEquals(0, emptyCompanies!!.numberOfCompanies())
@@ -327,7 +327,7 @@ class CompanyAPITest {
     }
 
     @Nested
-    inner class ListAfterTests{
+    inner class ListAfterTests {
         @Test
         fun `listAllAfter returns No Companies Stored message when ArrayList is empty`() {
             assertEquals(0, emptyCompanies!!.numberOfCompanies())
@@ -347,7 +347,7 @@ class CompanyAPITest {
     }
 
     @Nested
-    inner class ListOverRevenueTests{
+    inner class ListOverRevenueTests {
         @Test
         fun `listOverRevenue returns No Companies Stored message when ArrayList is empty`() {
             assertEquals(0, emptyCompanies!!.numberOfCompanies())
@@ -367,7 +367,7 @@ class CompanyAPITest {
     }
 
     @Nested
-    inner class ListOverEmployees{
+    inner class ListOverEmployees {
         @Test
         fun `listOverEmployees returns No Companies Stored message when ArrayList is empty`() {
             assertEquals(0, emptyCompanies!!.numberOfCompanies())

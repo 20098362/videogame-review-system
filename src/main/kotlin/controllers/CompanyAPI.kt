@@ -1,9 +1,7 @@
 package controllers
 
 import models.Company
-import models.VideoGame
 import persistence.Serializer
-import utils.ScannerInput
 import utils.Utilities.formatListString
 import utils.Utilities.isValidListIndex
 
@@ -14,11 +12,11 @@ import utils.Utilities.isValidListIndex
  *
  * @param serializerType to allow persistence
  */
-class CompanyAPI (serializerType: Serializer){
+class CompanyAPI(serializerType: Serializer) {
 
     private var serializer: Serializer = serializerType
 
-    private var companies =ArrayList<Company>()
+    private var companies = ArrayList<Company>()
 
     private var lastId = 0
 
@@ -29,7 +27,7 @@ class CompanyAPI (serializerType: Serializer){
      * @param company object details entered by the user
      * @return boolean to determine a success (true) or fail (false)
      */
-    fun addCompany(company: Company): Boolean{
+    fun addCompany(company: Company): Boolean {
         company.companyId = getId()
         return companies.add(company)
     }
@@ -41,13 +39,13 @@ class CompanyAPI (serializerType: Serializer){
     fun deleteCompany(id: Int) = companies.removeIf { company -> company.companyId == id }
 
     /**
-     * Updates an existing Company object with newly inputed data
+     * Updates an existing Company object with newly inputted data
      * @param id of the chosen Company object
      * @return boolean to determine a success (true) or fail (false)
      */
     fun updateCompany(id: Int, company: Company): Boolean {
         val foundCompany = findCompany(id)
-        if ((foundCompany != null) && (company != null)) {
+        if (foundCompany != null) {
             foundCompany.companyName = company.companyName
             foundCompany.annualRevenue = company.annualRevenue
             foundCompany.foundingYear = company.foundingYear
@@ -62,7 +60,7 @@ class CompanyAPI (serializerType: Serializer){
      * @return String to be printed in Main.kt
      */
     fun listAllCompanies(): String =
-        if  (companies.isEmpty()) "No companies stored"
+        if (companies.isEmpty()) "No companies stored"
         else formatListString(companies)
 
     /**
@@ -70,16 +68,16 @@ class CompanyAPI (serializerType: Serializer){
      * @return String to be printed in Main.kt
      */
     fun listAllBefore(): String =
-        if  (numberOfCompanies() == 0) "No companies stored"
-        else formatListString(companies.filter { company -> company.foundingYear < 2000})
+        if (numberOfCompanies() == 0) "No companies stored"
+        else formatListString(companies.filter { company -> company.foundingYear < 2000 })
 
     /**
      * Lists all the Company objects where the founding date is after 2000
      * @return String to be printed in Main.kt
      */
     fun listAllAfter(): String =
-        if  (numberOfCompanies() == 0) "No companies stored"
-        else formatListString(companies.filter { company -> company.foundingYear >= 2000})
+        if (numberOfCompanies() == 0) "No companies stored"
+        else formatListString(companies.filter { company -> company.foundingYear >= 2000 })
 
     /**
      * Lists all the Company objects where the annual revenue is over 100,000
@@ -87,7 +85,7 @@ class CompanyAPI (serializerType: Serializer){
      */
     fun listOverRevenue(): String =
         if (numberOfCompanies() == 0) "No companies stored"
-        else formatListString(companies.filter { company -> company.annualRevenue >=100000 })
+        else formatListString(companies.filter { company -> company.annualRevenue >= 100000 })
 
     /**
      * Lists all the Company objects where the number of employees is over 5000
@@ -95,7 +93,7 @@ class CompanyAPI (serializerType: Serializer){
      */
     fun listOverEmployees(): String =
         if (numberOfCompanies() == 0) "No companies stored"
-        else formatListString(companies.filter { company -> company.numOfEmployees >=5000 })
+        else formatListString(companies.filter { company -> company.numOfEmployees >= 5000 })
 
     /**
      * Finds the Company object as entered by the user via the index number
@@ -118,7 +116,7 @@ class CompanyAPI (serializerType: Serializer){
      */
     fun totalEmployees(): Int {
         var employeeCount = 0
-        for(obj in companies){
+        for (obj in companies) {
             employeeCount += obj.numOfEmployees
         }
         return employeeCount
@@ -130,15 +128,16 @@ class CompanyAPI (serializerType: Serializer){
      */
     fun averageRevenue(): Int {
         var count = 0
-        for (obj in companies){
+        for (obj in companies) {
             count += obj.annualRevenue
         }
-        return count/numberOfCompanies()
+        return count / numberOfCompanies()
     }
 
     /**
      * Reads the XML file containing the system data
      */
+    @Suppress("UNCHECKED_CAST")
     @Throws(Exception::class)
     fun load() {
         companies = serializer.read() as ArrayList<Company>

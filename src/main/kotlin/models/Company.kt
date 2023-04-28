@@ -17,7 +17,8 @@ data class Company(
     var annualRevenue: Int,
     var foundingYear: Int,
     var numOfEmployees: Int,
-    var games : MutableSet<VideoGame> = mutableSetOf()) {
+    var games: MutableSet<VideoGame> = mutableSetOf()
+) {
 
     private var lastGameId = 0
     private fun getGameId() = lastGameId++
@@ -27,7 +28,7 @@ data class Company(
      * @param videoGame; data entered by the user
      * @return determines successful add (true) or unsuccessful add (false)
      */
-    fun addVideoGame(videoGame: VideoGame) : Boolean {
+    fun addVideoGame(videoGame: VideoGame): Boolean {
         videoGame.gameId = getGameId()
         return games.add(videoGame)
     }
@@ -42,8 +43,8 @@ data class Company(
      * @param id entered by the user
      * @return VideoGame object or null
      */
-    fun findOne(id: Int): VideoGame?{
-        return games.find{ videoGame -> videoGame.gameId == id }
+    fun findOne(id: Int): VideoGame? {
+        return games.find { videoGame -> videoGame.gameId == id }
     }
 
     /**
@@ -52,7 +53,7 @@ data class Company(
      * @return Boolean to determine successful delete (true) or unsuccessful delete (false)
      */
     fun delete(id: Int): Boolean {
-        return games.removeIf { videoGame -> videoGame.gameId == id}
+        return games.removeIf { videoGame -> videoGame.gameId == id }
     }
 
     /**
@@ -60,10 +61,10 @@ data class Company(
      * @param id entered by the user, which gets the VideoGame object
      * @return Boolean to determine successful update (true) or unsuccessful update (false)
      */
-    fun update(id: Int, newGame : VideoGame): Boolean {
+    fun update(id: Int, newGame: VideoGame): Boolean {
         val foundGame = findOne(id)
 
-        if (foundGame != null){
+        if (foundGame != null) {
             foundGame.title = newGame.title
             foundGame.platform = newGame.platform
             foundGame.genre = newGame.genre
@@ -78,8 +79,8 @@ data class Company(
      * Lists all the VideoGame objects in the games ArrayList
      */
     fun listVideoGames() =
-        if (games.isEmpty())  "\tNO GAMES ADDED"
-        else  Utilities.formatSetString(games)
+        if (games.isEmpty()) "\tNO GAMES ADDED"
+        else Utilities.formatSetString(games)
 
     /**
      * Overrides the toString() to accommodate the new VideoGame object listing

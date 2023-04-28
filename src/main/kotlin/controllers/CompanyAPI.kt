@@ -1,7 +1,9 @@
 package controllers
 
 import models.Company
+import models.VideoGame
 import persistence.Serializer
+import utils.ScannerInput
 import utils.Utilities.formatListString
 import utils.Utilities.isValidListIndex
 
@@ -37,13 +39,43 @@ class CompanyAPI (serializerType: Serializer){
         if  (companies.isEmpty()) "No companies stored"
         else formatListString(companies)
 
+    fun listAllBefore(): String =
+        if  (numberOfCompanies() == 0) "No companies stored"
+        else formatListString(companies.filter { company -> company.foundingYear < 2000})
+
+    fun listAllAfter(): String =
+        if  (numberOfCompanies() == 0) "No companies stored"
+        else formatListString(companies.filter { company -> company.foundingYear >= 2000})
+
+    fun listOverRevenue(): String =
+        if (numberOfCompanies() == 0) "No companies stored"
+        else formatListString(companies.filter { company -> company.annualRevenue >=100000 })
+
+    fun listOverEmployees(): String =
+        if (numberOfCompanies() == 0) "No companies stored"
+        else formatListString(companies.filter { company -> company.numOfEmployees >=5000 })
+
     fun findCompany(index: Int): Company? =
         if (isValidListIndex(index, companies)) companies[index]
         else null
 
     fun numberOfCompanies(): Int = companies.size
 
-    fun isValidIndex(index: Int): Boolean = isValidListIndex(index, companies)
+    fun totalEmployees(): Int {
+        var employeeCount = 0
+        for(obj in companies){
+            employeeCount += obj.numOfEmployees
+        }
+        return employeeCount
+    }
+
+    fun averageRevenue(): Int {
+        var count = 0
+        for (obj in companies){
+            count += obj.annualRevenue
+        }
+        return count/numberOfCompanies()
+    }
 
     @Throws(Exception::class)
     fun load() {

@@ -20,7 +20,8 @@ fun mainMenu() : Int {
         """ 
          > $ansiCyan--------------------------------------------$ansiReset
          > |       $ansiRed Video Game Review System $ansiReset         |
-         > | $ansiRed $ansiReset                                        |
+         > |$ansiRed Remember to add/load a company  $ansiReset         |
+         > |$ansiRed before viewing statistics $ansiReset               |
          > $ansiCyan--------------------------------------------$ansiReset
          > | $ansiRed Company Menu $ansiReset                           |
          > |  $ansiBlue 1) Company related inputs $ansiReset             |
@@ -46,6 +47,7 @@ fun runMenu() {
         when (option) {
             1 -> listCompanyMenu()
             2 -> listGamesMenu()
+            3 -> listStatsMenu()
             20 -> save()
             21 -> load()
             0 -> exitApp()
@@ -58,7 +60,7 @@ fun listCompanyMenu() {
         val option = ScannerInput.readNextInt(
             """
                   > $ansiCyan--------------------------------------------$ansiReset
-                  > |$ansiRed No. of companies: $ansiReset                       |
+                  > |$ansiRed No. of companies: ${companyAPI.numberOfCompanies()} $ansiReset                     |
                   > $ansiCyan--------------------------------------------$ansiReset
                   > |$ansiBlue   1) Create new company   $ansiReset               |
                   > |$ansiBlue   2) Update existing company $ansiReset            |
@@ -73,7 +75,7 @@ fun listCompanyMenu() {
             1 -> addCompany()
             2 -> updateCompany()
             3 -> deleteCompany()
-            4 -> mainMenu()
+            4 -> runMenu()
             else -> println("Invalid option entered: $option")
         }
 }
@@ -81,8 +83,6 @@ fun listCompanyMenu() {
 fun listGamesMenu() {
     val option = ScannerInput.readNextInt(
         """
-                  > $ansiCyan--------------------------------------------$ansiReset
-                  > |$ansiRed No. of video games: $ansiReset                       |
                   > $ansiCyan--------------------------------------------$ansiReset
                   > |$ansiBlue   1) Create new video game   $ansiReset               |
                   > |$ansiBlue   2) Update existing video game $ansiReset            |
@@ -97,7 +97,38 @@ fun listGamesMenu() {
         1 -> addVideoGameToCompany()
         2 -> updateVideoGameInCompany()
         3 -> deleteVideoGame()
-        4 -> mainMenu()
+        4 -> runMenu()
+        else -> println("Invalid option entered: $option")
+    }
+}
+
+fun listStatsMenu() {
+    val option = ScannerInput.readNextInt(
+        """
+                  > $ansiCyan--------------------------------------------$ansiReset
+                  > |$ansiRed No. of companies: ${companyAPI.numberOfCompanies()} $ansiReset                     |
+                  > |$ansiRed Total employees: ${companyAPI.totalEmployees()} $ansiReset                  |
+                  > |$ansiRed Average employees per company: ${companyAPI.totalEmployees()/companyAPI.numberOfCompanies()} $ansiReset     |
+                  > |$ansiRed Average revenue per company: ${companyAPI.averageRevenue()} $ansiReset     |
+                  > $ansiCyan--------------------------------------------$ansiReset
+                  > |$ansiBlue   1) List all companies + games   $ansiReset       |
+                  > |$ansiBlue   2) List companies formed before 2000 $ansiReset  |
+                  > |$ansiBlue   3) List companies formed after 2000 $ansiReset   |
+                  > |$ansiBlue   4) List companies 100,000+ in revenue $ansiReset |
+                  > |$ansiBlue   5) List companies with 5,000+ employees$ansiReset|
+                  > $ansiCyan--------------------------------------------$ansiReset
+                  > |$ansiBlue   0) Back $ansiReset                               |
+                  > $ansiCyan--------------------------------------------$ansiReset
+         >$ansiGreen ==>> """.trimMargin(">")
+    )
+
+    when (option) {
+        1 -> listAllCompanies()
+        2 -> listAllBefore()
+        3 -> listAllAfter()
+        4 -> listOverRevenue()
+        5 -> listOverEmployees()
+        0 -> runMenu()
         else -> println("Invalid option entered: $option")
     }
 }
@@ -207,6 +238,14 @@ fun deleteVideoGame() {
 }
 
 fun listAllCompanies() = println(companyAPI.listAllCompanies())
+
+fun listAllBefore() = println(companyAPI.listAllBefore())
+
+fun listAllAfter() = println(companyAPI.listAllAfter())
+
+fun listOverRevenue() = println(companyAPI.listOverRevenue())
+
+fun listOverEmployees() = println(companyAPI.listOverEmployees())
 
 private fun askUserToChooseCompany(): Company? {
     listAllCompanies()

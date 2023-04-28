@@ -30,10 +30,10 @@ class CompanyAPITest {
     @BeforeEach
     fun setup(){
         eaSports = Company(0 ,"EA Sports", 100000, 1990, 2000)
-        blizzard = Company(1, "Blizzard Entertainment", 150000, 1989, 1000)
-        steam = Company(2, "Steam", 500000, 2000, 5000)
+        blizzard = Company(1, "Blizzard Entertainment", 10000, 1989, 1000)
+        steam = Company(2, "Steam", 500000, 2000, 5100)
         epicGames = Company(3, "Epic Games", 350000, 2010, 1500)
-        concernedApe = Company(4, "Concerned Ape", 50000, 2012, 500)
+        concernedApe = Company(4, "Concerned Ape", 50000, 2012, 5500)
 
         fifa = VideoGame(0, "FIFA 15", "XBox", "Sports", 100000, 90000)
         portal = VideoGame(0, "Portal 2", "PC", "Puzzle", 80000, 100000)
@@ -136,12 +136,12 @@ class CompanyAPITest {
         }
 
         @Test
-        fun `updating a note that exists returns true and updates`() {
+        fun `updating a Company that exists returns true and updates`() {
             assertEquals(concernedApe, populatedCompanies!!.findCompany(4))
             assertEquals("Concerned Ape", populatedCompanies!!.findCompany(4)!!.companyName)
             assertEquals(50000, populatedCompanies!!.findCompany(4)!!.annualRevenue)
             assertEquals(2012, populatedCompanies!!.findCompany(4)!!.foundingYear)
-            assertEquals(500, populatedCompanies!!.findCompany(4)!!.numOfEmployees)
+            assertEquals(5500, populatedCompanies!!.findCompany(4)!!.numOfEmployees)
 
             assertTrue(populatedCompanies!!.updateCompany(4, Company(5, "Updating Company", 1, 1, 1)))
             assertEquals("Updating Company", populatedCompanies!!.findCompany(4)!!.companyName)
@@ -285,6 +285,104 @@ class CompanyAPITest {
             assertEquals(storingCompanies.findCompany(0), loadedCompanies.findCompany(0))
             assertEquals(storingCompanies.findCompany(1), loadedCompanies.findCompany(1))
             assertEquals(storingCompanies.findCompany(2), loadedCompanies.findCompany(2))
+        }
+    }
+
+    @Nested
+    inner class CountingTests{
+        @Test
+        fun `total number of employees returns the correct value in a populated array`(){
+            assertEquals(15100, populatedCompanies!!.totalEmployees())
+        }
+
+        @Test
+        fun `average employees counts correctly when counting a populated array`(){
+            assertEquals(3020, populatedCompanies!!.totalEmployees()/populatedCompanies!!.numberOfCompanies())
+        }
+
+        @Test
+        fun `average revenue counts correctly when counting a populated array`(){
+            assertEquals(202000, populatedCompanies!!.averageRevenue())
+        }
+    }
+
+    @Nested
+    inner class ListBeforeTests{
+        @Test
+        fun `listAllBefore returns No Companies Stored message when ArrayList is empty`() {
+            assertEquals(0, emptyCompanies!!.numberOfCompanies())
+            assertTrue(emptyCompanies!!.listAllBefore().lowercase().contains("no companies"))
+        }
+
+        @Test
+        fun `listAllBefore returns companies when ArrayList has companies stored`() {
+            assertEquals(5, populatedCompanies!!.numberOfCompanies())
+            val companiesString = populatedCompanies!!.listAllBefore().lowercase()
+            assertTrue(companiesString.contains("ea sports"))
+            assertTrue(companiesString.contains("blizzard entertainment"))
+            assertFalse(companiesString.contains("steam"))
+            assertFalse(companiesString.contains("epic games"))
+            assertFalse(companiesString.contains("concerned ape"))
+        }
+    }
+
+    @Nested
+    inner class ListAfterTests{
+        @Test
+        fun `listAllAfter returns No Companies Stored message when ArrayList is empty`() {
+            assertEquals(0, emptyCompanies!!.numberOfCompanies())
+            assertTrue(emptyCompanies!!.listAllAfter().lowercase().contains("no companies"))
+        }
+
+        @Test
+        fun `listAllBefore returns companies when ArrayList has companies stored`() {
+            assertEquals(5, populatedCompanies!!.numberOfCompanies())
+            val companiesString = populatedCompanies!!.listAllAfter().lowercase()
+            assertFalse(companiesString.contains("ea sports"))
+            assertFalse(companiesString.contains("blizzard entertainment"))
+            assertTrue(companiesString.contains("steam"))
+            assertTrue(companiesString.contains("epic games"))
+            assertTrue(companiesString.contains("concerned ape"))
+        }
+    }
+
+    @Nested
+    inner class ListOverRevenueTests{
+        @Test
+        fun `listOverRevenue returns No Companies Stored message when ArrayList is empty`() {
+            assertEquals(0, emptyCompanies!!.numberOfCompanies())
+            assertTrue(emptyCompanies!!.listOverRevenue().lowercase().contains("no companies"))
+        }
+
+        @Test
+        fun `listOverRevenue returns companies when ArrayList has companies stored`() {
+            assertEquals(5, populatedCompanies!!.numberOfCompanies())
+            val companiesString = populatedCompanies!!.listOverRevenue().lowercase()
+            assertTrue(companiesString.contains("ea sports"))
+            assertFalse(companiesString.contains("blizzard entertainment"))
+            assertTrue(companiesString.contains("steam"))
+            assertTrue(companiesString.contains("epic games"))
+            assertFalse(companiesString.contains("concerned ape"))
+        }
+    }
+
+    @Nested
+    inner class ListOverEmployees{
+        @Test
+        fun `listOverEmployees returns No Companies Stored message when ArrayList is empty`() {
+            assertEquals(0, emptyCompanies!!.numberOfCompanies())
+            assertTrue(emptyCompanies!!.listOverEmployees().lowercase().contains("no companies"))
+        }
+
+        @Test
+        fun `listOverEmployees returns companies when ArrayList has companies stored`() {
+            assertEquals(5, populatedCompanies!!.numberOfCompanies())
+            val companiesString = populatedCompanies!!.listOverEmployees().lowercase()
+            assertFalse(companiesString.contains("ea sports"))
+            assertFalse(companiesString.contains("blizzard entertainment"))
+            assertTrue(companiesString.contains("steam"))
+            assertFalse(companiesString.contains("epic games"))
+            assertTrue(companiesString.contains("concerned ape"))
         }
     }
 }

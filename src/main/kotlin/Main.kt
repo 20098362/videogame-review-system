@@ -20,7 +20,8 @@ fun mainMenu() : Int {
         """ 
          > $ansiCyan--------------------------------------------$ansiReset
          > |       $ansiRed Video Game Review System $ansiReset         |
-         > | $ansiRed $ansiReset                                        |
+         > |$ansiRed Remember to add/load a company  $ansiReset         |
+         > |$ansiRed before viewing statistics $ansiReset               |
          > $ansiCyan--------------------------------------------$ansiReset
          > | $ansiRed Company Menu $ansiReset                           |
          > |  $ansiBlue 1) Company related inputs $ansiReset             |
@@ -106,15 +107,15 @@ fun listStatsMenu() {
         """
                   > $ansiCyan--------------------------------------------$ansiReset
                   > |$ansiRed No. of companies: ${companyAPI.numberOfCompanies()} $ansiReset                     |
-                  > |$ansiRed Total employees: ${companyAPI.totalEmployees()} $ansiReset                     |
-                  > |$ansiRed Average employees per company: ${companyAPI.totalEmployees()/companyAPI.numberOfCompanies()} $ansiReset                     |
-                  > |$ansiRed Average revenue per company: ${companyAPI.averageRevenue()} $ansiReset                     |
+                  > |$ansiRed Total employees: ${companyAPI.totalEmployees()} $ansiReset                  |
+                  > |$ansiRed Average employees per company: ${companyAPI.totalEmployees()/companyAPI.numberOfCompanies()} $ansiReset     |
+                  > |$ansiRed Average revenue per company: ${companyAPI.averageRevenue()} $ansiReset     |
                   > $ansiCyan--------------------------------------------$ansiReset
-                  > |$ansiBlue   1) List all companies + games   $ansiReset               |
-                  > |$ansiBlue   2) List companies formed before 2000 $ansiReset            |
-                  > |$ansiBlue   3) List companies formed after 2000 $ansiReset            |
-                  > |$ansiBlue   4) List companies above 100,000 in revenue $ansiReset            |
-                  > |$ansiBlue   5) List companies with over 5,000 employees $ansiReset            |
+                  > |$ansiBlue   1) List all companies + games   $ansiReset       |
+                  > |$ansiBlue   2) List companies formed before 2000 $ansiReset  |
+                  > |$ansiBlue   3) List companies formed after 2000 $ansiReset   |
+                  > |$ansiBlue   4) List companies 100,000+ in revenue $ansiReset |
+                  > |$ansiBlue   5) List companies with 5,000+ employees$ansiReset|
                   > $ansiCyan--------------------------------------------$ansiReset
                   > |$ansiBlue   0) Back $ansiReset                               |
                   > $ansiCyan--------------------------------------------$ansiReset

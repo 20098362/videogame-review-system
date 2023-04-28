@@ -24,7 +24,7 @@ object Utilities {
     @JvmStatic
     fun formatListString(companiesToFormat: List<Company>): String =
         companiesToFormat
-            .joinToString(separator = "\n") { company ->  "$company" }
+            .joinToString(separator = "\n") { company -> "$company" }
 
     /**
      * Takes in a string and organises it to fit a certain format
@@ -34,5 +34,5 @@ object Utilities {
     @JvmStatic
     fun formatSetString(videoGamesToFormat: Set<VideoGame>): String =
         videoGamesToFormat
-            .joinToString(separator = "\n") { videoGame ->  "\t$videoGame" }
+            .joinToString(separator = "\n") { videoGame -> "\t$videoGame" }
 }

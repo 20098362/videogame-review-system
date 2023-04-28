@@ -14,5 +14,4 @@ data class VideoGame(
     var genre: String,
     var budget: Int,
     var profit: Int
-){
-}
+)

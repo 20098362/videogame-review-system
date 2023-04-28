@@ -1,3 +1,9 @@
+/**
+ * Video Game Review System
+ * @version V1.0
+ * @author Troy Barrett 20098362
+ */
+
 import utils.ScannerInput
 import kotlin.system.exitProcess
 import controllers.CompanyAPI
@@ -15,6 +21,12 @@ const val ansiYellow = "\u001B[33m"
 const val ansiBlue = "\u001B[34m"
 const val ansiCyan = "\u001B[36m"
 
+/**
+ * This class is responsible for taking in an Int from the user to determine a menu choice
+ * It also prints out a menu for the user to interact with
+ *
+ * @return Int;used as the menu controller option
+ */
 fun mainMenu() : Int {
     return ScannerInput.readNextInt(
         """ 
@@ -41,6 +53,9 @@ fun mainMenu() : Int {
     )
 }
 
+/**
+ * Takes in the option from mainMenu to determine what function the user wishes to perform
+ */
 fun runMenu() {
     do {
         val option = mainMenu()
@@ -56,6 +71,10 @@ fun runMenu() {
     } while (true)
 }
 
+/**
+ * Prints out a menu which deals with the Company functions
+ * Also takes in an Int from the user to determine which function they wish to perform
+ */
 fun listCompanyMenu() {
         val option = ScannerInput.readNextInt(
             """
@@ -80,6 +99,10 @@ fun listCompanyMenu() {
         }
 }
 
+/**
+ * Prints out a menu which deals with the VideoGame functions
+ * Also takes in an Int from the user to determine which function they wish to perform
+ */
 fun listGamesMenu() {
     val option = ScannerInput.readNextInt(
         """
@@ -102,6 +125,10 @@ fun listGamesMenu() {
     }
 }
 
+/**
+ * Prints out a menu which displays functions and statistics based on the data loaded in the system
+ * Also takes in an Int from the user to determine which function they wish to perform
+ */
 fun listStatsMenu() {
     val option = ScannerInput.readNextInt(
         """
@@ -133,6 +160,9 @@ fun listStatsMenu() {
     }
 }
 
+/**
+ * Takes in the values entered by the user then creates a Company object which is then added to the companies ArrayList
+ */
 fun addCompany(){
 
     val companyName = ScannerInput.readNextLine("Enter the company name: ")
@@ -148,6 +178,9 @@ fun addCompany(){
     else println("Create Failed")
 }
 
+/**
+ * User selects a Company object and then enters new data which overrides the existing data of the Company object
+ */
 fun updateCompany() {
     listAllCompanies()
     if (companyAPI.numberOfCompanies() > 0) {
@@ -169,6 +202,9 @@ fun updateCompany() {
     }
 }
 
+/**
+ * User selects a Company object which is then removed from the companies ArrayList
+ */
 fun deleteCompany() {
     listAllCompanies()
     if (companyAPI.numberOfCompanies() > 0) {
@@ -184,7 +220,11 @@ fun deleteCompany() {
     }
 }
 
-private fun addVideoGameToCompany() {
+/**
+ * Takes in the values entered by the user then creates a VideoGame object which is then
+ * added to the games ArrayList in the Company model
+ */
+fun addVideoGameToCompany() {
     val company: Company? = askUserToChooseCompany()
     if (company != null) {
         if (company.addVideoGame(VideoGame(title = ScannerInput.readNextLine("Enter the video game title: "),
@@ -197,6 +237,9 @@ private fun addVideoGameToCompany() {
     }
 }
 
+/**
+ * User selects a VideoGame object and then enters the new data which then overrides the existing VideoGame object data
+ */
 fun updateVideoGameInCompany() {
     val company: Company? = askUserToChooseCompany()
     if (company != null) {
@@ -222,6 +265,9 @@ fun updateVideoGameInCompany() {
     }
 }
 
+/**
+ * User selects a VideoGame object which is then removed from the games ArrayList in the Company model
+ */
 fun deleteVideoGame() {
     val company: Company? = askUserToChooseCompany()
     if (company != null) {
@@ -237,17 +283,37 @@ fun deleteVideoGame() {
     }
 }
 
+/**
+ * Prints the string of companies returned by the listAllCompanies method
+ */
 fun listAllCompanies() = println(companyAPI.listAllCompanies())
 
+/**
+ * Prints the string of companies who were founded before 2000
+ */
 fun listAllBefore() = println(companyAPI.listAllBefore())
 
+/**
+ * Prints the string of companies who were founded after 2000
+ */
 fun listAllAfter() = println(companyAPI.listAllAfter())
 
+/**
+ * Prints the string of companies who have a revenue of over 100,000
+ */
 fun listOverRevenue() = println(companyAPI.listOverRevenue())
 
+/**
+ * Prints the string of companies who have over 5,000 employees
+ */
 fun listOverEmployees() = println(companyAPI.listOverEmployees())
 
-private fun askUserToChooseCompany(): Company? {
+/**
+ * Asks the user to select a company so Company model methods can be performed on the games ArrayList in the Company model
+ *
+ * @return chosen Company object or null
+ */
+fun askUserToChooseCompany(): Company? {
     listAllCompanies()
     if (companyAPI.numberOfCompanies() > 0) {
         val company = companyAPI.findCompany(ScannerInput.readNextInt("\nEnter the index of the company: "))
@@ -258,7 +324,13 @@ private fun askUserToChooseCompany(): Company? {
     return null
 }
 
-private fun askUserToChooseVideoGame(company: Company): VideoGame? {
+/**
+ * Asks the user to choose a VideoGame object from a Company object which is then returned
+ *
+ * @param company object selected
+ * @return VideoGame object from the Company object selected
+ */
+fun askUserToChooseVideoGame(company: Company): VideoGame? {
     return if (company.numberOfGames() > 0) {
         print(company.listVideoGames())
         company.findOne(ScannerInput.readNextInt("\nEnter the id of the video game: "))
@@ -269,6 +341,9 @@ private fun askUserToChooseVideoGame(company: Company): VideoGame? {
     }
 }
 
+/**
+ * Writes the data in the system to an external xml file
+ */
 fun save() {
     try {
         companyAPI.store()
@@ -277,6 +352,9 @@ fun save() {
     }
 }
 
+/**
+ * Reads the data from an external xml file and put it into memory
+ */
 fun load() {
     try {
         companyAPI.load()
@@ -285,11 +363,17 @@ fun load() {
     }
 }
 
+/**
+ * Closes the console app
+ */
 fun exitApp(){
     println("Closing app")
     exitProcess(0)
 }
 
+/**
+ * Starts the console app
+ */
 fun main(args: Array<String>){
     runMenu()
 }
